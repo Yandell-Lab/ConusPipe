@@ -122,7 +122,7 @@ foreach my$uSeq(@$uniqSeq){
 	print OUT ">$pepSeq{$uSeq}\n$uSeq\n";	
 }
 close OUT;
-system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue $evalCutoff -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
+system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue 1e-4 -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
 my($mtbnOut)=<$sample.vs.mn.tbn.out>;
 my($cleanFa)=<$sample.tri.no_anot.pep.clean.fa>;
 my$cleanDb=Bio::DB::Fasta->new($cleanFa);
