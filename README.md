@@ -13,8 +13,10 @@ If you don't want to run our conotoxin annotation pipeline, which starts from fa
 
 nohup pathToConusPipe/bin/discoveryPipe.4methods.simple.pl [-options] conotoxinseqTraining noConotoxinseqTraining fpDb  lengthLowCutoff lengthCutoff evalCutoff DvalCutoff  pathToConusPipe/doc/codeCharMwPi outName
 
-Options:"\n"
---nucleotide <nt.fa> "\n"
+Options:
+
+--nucleotide <nt.fa> 
+
 --peptide <pep.fa>
 
 
