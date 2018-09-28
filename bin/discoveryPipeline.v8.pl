@@ -27,6 +27,7 @@ conotoxinseq and noConotoxinseq are peptide seq in one-line header, one-line bod
 #Note: remember to remove stop codon from newly blastx generated conotoxins in pep before cat the conotoxins into training dataset\n";
 my $configFile=$ARGV[0];
 my $aaInfor=$ARGV[1];
+die $usage unless $aaInfor;
 my($triNoAnotFa,$triNoAnotPepFa,$conoSeq,$NoconoSeq,$tpmCutoff,$evalCutoff,$DvalCutoff,$mn,$lengthCutoff,$sample);
 open FH,$configFile;
 while(defined (my$line=<FH>)){
@@ -55,7 +56,6 @@ while(defined (my$line=<FH>)){
 	}
 }
 close FH;
-die $usage unless $aaInfor;
 die "please give noAnotNt file!" unless $triNoAnotFa;
 die "please give noAnotPep file!" unless $triNoAnotPepFa;
 die "please give conotoxin seq file!" unless $conoSeq;
@@ -81,7 +81,7 @@ while(defined (my$line=<FH>)){
 	}
 }
 close FH;
-#read aainformation, put into hash:{aa}->[charge,mw,pi], for feature extraction
+#read aa information, put into hash:{aa}->[charge,mw,pi], for feature extraction
 my%aaInfo;
 open FH, $aaInfor;
 while (my$line=<FH>){
@@ -122,7 +122,7 @@ foreach my$uSeq(@$uniqSeq){
 	print OUT ">$pepSeq{$uSeq}\n$uSeq\n";	
 }
 close OUT;
-system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue 1e-4 -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
+system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue $evalCutoff -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
 my($mtbnOut)=<$sample.vs.mn.tbn.out>;
 my($cleanFa)=<$sample.tri.no_anot.pep.clean.fa>;
 my$cleanDb=Bio::DB::Fasta->new($cleanFa);
@@ -436,8 +436,8 @@ close OUT10;
 close OUT11;
 close OUT12;
 close OUT13;
-#system("cat $sample.filterProbTpm.pep.fa $sample.mtbn.pep.fa $sample.bp.putative.newSupfam.tox.pep.fa > $sample.potential.newSupfam.pep.fa");
-#system("cat $sample.filterProbTpm.nt.fa $sample.mtbn.nt.fa $sample.bp.putative.newSupfam.tox.nt.fa > $sample.potential.newSupfam.nt.fa");
+system("cat $sample.*.pep.fa.txt > $sample.total.ml.pep.fa");
+system("cat $sample.*.nt.fa.txt > $sample.total.ml.nt.fa");
 #-----------------------------------------------------------------------------
 #-----------------------------------------------------------------------------
 #---------------------------------- SUBS -------------------------------------
@@ -641,7 +641,31 @@ sub cleanSpName{
         $sp=~ s/SG//;
         $sp=~ s/VD//;
         $sp=~ s/NR//;
+	$sp=~ s/_MP//;
         $sp=~ s/4section//;
+	$sp=~ s/1\d+X\d+\.//;
+        $sp=~ s/\.SG//;
+        $sp=~ s/\.\d\.SG//;
+        $sp=~ s/\.n\d//;
+        $sp=~ s/\.n\d\.B\d//;
+        $sp=~ s/\.\d//;
+        $sp=~ s/Clavus\.?/Cl\./;
+        $sp=~ s/canicularus/canicularis/;
+        $sp=~ s/\.B\d//;
+        $sp=~ s/\S+imperialis/imperialis/;
+        $sp=~ s/Geo(\S+)/geographus/;
+        $sp=~ s/Sul\S+/sulcatus/;
+        $sp=~ s/sulcatuspool/sulcatus/;
+        $sp=~ s/Imp\S+/imperialis/;
+        $sp=~ s/imperialis\.\S+/imperialis/;
+        $sp=~ s/rolani\.\S+/rolani/;
+        $sp=~ s/textile\.\S+/textile/;
+        $sp=~ s/tulipa\.\S+/tulipa/;
+        $sp=~ s/mollucensis\d/mollucensis/;
+	if($sp=~ /^C\./){
+		$sp=~ s/C\.//;
+	}
+	$sp=lc $sp;
         return $sp;
 }
 
