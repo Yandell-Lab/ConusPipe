@@ -14,8 +14,8 @@ use File::Basename;
 #----------------------------------- MAIN ------------------------------------
 #-----------------------------------------------------------------------------
 
-my $usage = "pickNoAnot6frameTranslate.pl xx.transcriptome.nt.fa lengthLowCutoff outName\n";
-my($triFa,$lengthLowCutoff,$sample)=@ARGV;
+my $usage = "pickNoAnot6frameTranslate.pl xx.transcriptome.nt.fa outName\n";
+my($triFa,$sample)=@ARGV;
 die $usage unless $sample;
 ##6 frame translation
 	my$db=Bio::DB::Fasta->new($triFa);
@@ -30,7 +30,7 @@ die $usage unless $sample;
 			my$seqstr=$db->seq($id);
 			print OUT6 ">$desc\n$seqstr\n";
 			for my $j (1..3){
-                        	translate_print_seq($id,$seqstr, $j,\*OUT7,$lengthLowCutoff);
+                        	translate_print_seq_whole($id,$seqstr, $j,\*OUT7);
                 	}
 
 		}
@@ -356,26 +356,16 @@ sub removeRedundant{
 
 
 
-sub translate_print_seq {
+sub translate_print_seq_whole {
         my $entry=shift;
         my $seq=shift;
         my $frame=shift;
 	my $fh=shift;
-	my $pep_RL=shift;
         my $pep = translate_with_frame($seq, $frame);
         my $rpep = translate_with_frame($seq, -$frame);
-	#print $fh $entry."_frame_$frame\n$pep\n";
-	#print $fh $entry."_frame_-$frame\n$rpep\n";
+	print $fh ">$entry"."_frame_$frame\n$pep\n";
+	print $fh ">$entry"."_frame_-$frame\n$rpep\n";
 
-        my @peps=$pep=~ /([A-Z]{$pep_RL,})\*/g;
-                for (my$i=0;$i<@peps;$i++){
-                        print $fh ">$entry"."_frame_$frame"."_$i\n$peps[$i]\n";
-                }
-
-        my @rpeps=$rpep=~ /([A-Z]{$pep_RL,})\*/g;
-                for (my$k=0;$k<@rpeps;$k++){
-                        print $fh ">$entry"."_frame_-$frame"."_$k\n$rpeps[$k]\n";
-                }
 
 }
 
