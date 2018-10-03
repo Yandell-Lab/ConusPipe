@@ -662,6 +662,18 @@ sub cleanSpName{
         $sp=~ s/textile\.\S+/textile/;
         $sp=~ s/tulipa\.\S+/tulipa/;
         $sp=~ s/mollucensis\d/mollucensis/;
+	$sp=~ s/bullatusB\d/bullatus/;
+	$sp=~ s/\.HP//;
+	$sp=~ s/Cmurcon2/Cmurcon/;
+	$sp=~ s/Con\.//;
+	$sp=~ s/_/\./;
+	$sp=~ s/impB4/imperialis/;
+	$sp=~ s/ochroleucusB\d/ochroleucus/;
+	$sp=~ s/Praec/praecellens/;
+	$sp=~ s/\.Sogod$//;
+	$sp=~ s/textileNR/textile/;
+	$sp=~ s/\.all//;
+	$sp=~ s/^\d+\.//;
 	if($sp=~ /^C\./){
 		$sp=~ s/C\.//;
 	}
