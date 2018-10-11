@@ -12,7 +12,7 @@ use Array::Utils qw(:all);
 #----------------------------------- MAIN ------------------------------------
 #-----------------------------------------------------------------------------
 
-my $usage = "discoveryPipeline.pl   <configure file> codeCharMwPi\n
+my $usage = "discoveryPipeline.pl   <configure file> codeCharMwPi path2ConusPipe\n
 
 
 Description:
@@ -27,7 +27,8 @@ conotoxinseq and noConotoxinseq are peptide seq in one-line header, one-line bod
 #Note: remember to remove stop codon from newly blastx generated conotoxins in pep before cat the conotoxins into training dataset\n";
 my $configFile=$ARGV[0];
 my $aaInfor=$ARGV[1];
-die $usage unless $aaInfor;
+my $path=$ARGV[2];
+die $usage unless $path;
 my($triNoAnotFa,$triNoAnotPepFa,$conoSeq,$NoconoSeq,$tpmCutoff,$evalCutoff,$DvalCutoff,$mn,$lengthCutoff,$sample);
 open FH,$configFile;
 while(defined (my$line=<FH>)){
@@ -332,7 +333,7 @@ close OUT2;
 #use logistic regression,semi-supervised learning and neural network classification - run python script to train classification model to predict on sample.X.test.txt, get the seqID of transcripts that are predicted as cono (1) for each method,print out(need to store eveything in data structure)   the overlapped seq in sample.ml.overlap.putative.cono.fa, print out non-overlapped seq in sample.logit.putative.cono.fa, sample.labelSpread.putative.cono.fa, sample.keras.putative.cono.fa.
 
 
-system("python /home/qli/bin/taxVm/predict2.py $sample.X.test.txt $sample.X.training.txt $sample.y.training.txt $sample.numId.logitSample.txt $sample.numId.semiSuperSample.txt $sample.numId.neuroNetSample.txt");
+system("python $path/ConusPipe/bin/predict2.py $sample.X.test.txt $sample.X.training.txt $sample.y.training.txt $sample.numId.logitSample.txt $sample.numId.semiSuperSample.txt $sample.numId.neuroNetSample.txt");
 
 
 #parse $sample.xxx.numId.txt file and get arrayIndex if the elements which ==1. get seqId according to  hash-  %forNumId #forNumId{arrayIndex}->original seq ID)},   print out header information and seq.
