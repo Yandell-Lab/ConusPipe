@@ -1,4 +1,3 @@
-/usr/bin/python -w
 from __future__ import division
 import numpy as np
 from sklearn.linear_model import LogisticRegression
