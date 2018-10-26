@@ -70,7 +70,7 @@ out.write(','.join(map(str,y_hat)))
 out.close()
 #semi-supervised learning LabelSpreading
 #choose  K = 5 alpha= 0.8 
-clf = LabelSpreading(kernel='knn',n_neighbors=3,alpha=1,n_jobs=15)
+clf = LabelSpreading(kernel='knn',n_neighbors=3,alpha=0.99999,n_jobs=15)
 Xin=np.concatenate((X,Xtest),axis=0)
 lenXt=len(Xtest)
 labels=np.empty(lenXt)
