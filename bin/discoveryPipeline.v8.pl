@@ -123,7 +123,7 @@ foreach my$uSeq(@$uniqSeq){
 	print OUT ">$pepSeq{$uSeq}\n$uSeq\n";	
 }
 close OUT;
-system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue $evalCutoff -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
+system("tblastn -db $mn -query $sample.tri.no_anot.pep.clean.fa -num_threads 20 -outfmt '6 std qframe sframe' -evalue 1e-24 -matrix BLOSUM62 -max_target_seqs 1 -out $sample.vs.mn.tbn.out");
 my($mtbnOut)=<$sample.vs.mn.tbn.out>;
 my($cleanFa)=<$sample.tri.no_anot.pep.clean.fa>;
 my$cleanDb=Bio::DB::Fasta->new($cleanFa);
@@ -314,8 +314,8 @@ my@NoconoHK=keys %{$NoconoHash};
 my@conoNocono=(1) x @conoHK;
 my@Nocono=(0) x @NoconoHK;
 push (@conoNocono,@Nocono);
-open OUT1,">$sample.X.training.txt";
-open OUT2,">$sample.y.training.txt";
+open OUT1,">$sample.X.training.txt" or die "can't open $sample.X.training.txt";
+open OUT2,">$sample.y.training.txt" or die "can't open $sample.y.training.txt";
 foreach my $id (@conoHK){
 	print OUT1 join("\t",@{$conoHash->{$id}});
         print OUT1 "\n";
@@ -519,6 +519,9 @@ sub getFeatures{
                                 }
 
                         }
+			$countSs=0.0000000001 if $countSs==0;
+			$countPp=0.0000000001 if $countPp==0;
+			$countMTox=0.0000000001 if $countMTox==0;
 			my$cysSsPct=$cysSs/$countSs;
 			my$mwSsAve=$mwSs/($countSs*205);
                         my$piSsAve=$piSs/($countSs*11);
@@ -599,6 +602,9 @@ sub getXFeatures{
 
                         }
                         #print "$mwSs\t$piSs\t$pcSs\t$ncSs\t$countSs\t$mwPp\t$piPp\t$pcPp\t$ncPp\t$countPp\t$mwMTox\t$piMTox\t$pcMTox\t$ncMTox\t$countMTox\n";#debugger
+                        $countSs=0.0000000001 if $countSs==0;
+                        $countPp=0.0000000001 if $countPp==0;
+                        $countMTox=0.0000000001 if $countMTox==0;
                         my$cysSsPct=$cysSs/$countSs;
                         my$mwSsAve=$mwSs/($countSs*205);
                         my$piSsAve=$piSs/($countSs*11);
