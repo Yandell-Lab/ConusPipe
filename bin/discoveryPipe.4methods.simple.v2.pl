@@ -26,7 +26,7 @@ input peptide or nucleotide cDNA seq -- opitons.Peptide seq need to be in upperc
 #1. for nt.fa, 6 frame translate into pep seq,extract seq from M to stop codon which are longer than 50--> here use lengthLowCutoff aas but shorter than user input upper limit.remove the redundant seq(only keep the longest). For pep.fa directly trim for signalP. since signalp can only start to predict from the 1st M, so have to trim the seq according to different Ms. for the trimmed ones,filtering by requiring length(50-upper limit length aa). Then run signalP( -f short) on pepseq to get output, parse output(D-value use default-0.45,9th column==Y) to extract potential new superfamilies from test peptide,remove redundant ones(only keep the longest), get the D-value and cys%,aa information,  put into hash ; 
 #2. use blastp on the pep.fa after filter on signalP(have to have a hit) , putative conotoxins of new superfamily will be reported only when there are 2 or more species in one hit each other. store hits in a hash. use logistic regression and 1 semi-supervised learning(label spreading), 1 neural net work -perceptron model - conotoxin/noCono as outcome, signalp D-value,Pcys, molecular weight,  percentage of positive/negative amino acids, isoelectric point for each seq part- signal seq, propeprtide and mature toxin (length ratio: 0.229        0.197   0.574) as independent predictors, output all the features from test dataset in sample.X.test.txt, output all features from training dataset in sample.X.training.txt,output  0/1 as non_cono/cono in sample.y.training.txt.
 #3.run python script to train classification model to predict on sample.X.test.txt, get the seqID of transcripts that are predicted as cono.
- output: for each method,print out(need to store eveything in data structure)   the overlapped seq in sample.xx(4,3,2).overlap.putative.cono.fa, print out non-overlapped seq in sample.bp.putative.cono.fa, sample.logit.putative.cono.fa, sample.labelSpread.putative.cono.fa, sample.perceptron.putative.cono.fa. \n";
+ output: for each method,print out the overlapped seq in sample.xx(4,3,2).overlap.pep.fa.txt, print out non-overlapped seq in sample.bpSample.pep.fa.txt, sample.logitSample.pep.fa.txt, sample.labelSpreadSample.pep.fa.txt, sample.neuroNetSample.pep.fa.txt.All the predicted putative toxins are put together in the file sample.total.ml.pep.fa \n";
 my($triNoAnotFa,$triNoAnotPepFa);
 GetOptions('nucleotide=s'=> \$triNoAnotFa,
 	'peptide=s'=> \$triNoAnotPepFa);
@@ -490,6 +490,42 @@ sub cleanSpName{
         $sp=~ s/NR//;
         $sp=~ s/_MP//;
         $sp=~ s/4section//;
+	$sp=~ s/1\d+X\d+\.//;
+        $sp=~ s/\.SG//;
+        $sp=~ s/\.\d\.SG//;
+        $sp=~ s/\.n\d//;
+        $sp=~ s/\.n\d\.B\d//;
+        $sp=~ s/\.\d//;
+        $sp=~ s/Clavus\.?/Cl\./;
+        $sp=~ s/canicularus/canicularis/;
+        $sp=~ s/\.B\d//;
+        $sp=~ s/\S+imperialis/imperialis/;
+        $sp=~ s/Geo(\S+)/geographus/;
+        $sp=~ s/Sul\S+/sulcatus/;
+        $sp=~ s/sulcatuspool/sulcatus/;
+        $sp=~ s/Imp\S+/imperialis/;
+        $sp=~ s/imperialis\.\S+/imperialis/;
+        $sp=~ s/rolani\.\S+/rolani/;
+        $sp=~ s/textile\.\S+/textile/;
+        $sp=~ s/tulipa\.\S+/tulipa/;
+        $sp=~ s/mollucensis\d/mollucensis/;
+        $sp=~ s/bullatusB\d/bullatus/;
+        $sp=~ s/\.HP//;
+        $sp=~ s/Cmurcon2/Cmurcon/;
+        $sp=~ s/Con\.//;
+        $sp=~ s/_/\./;
+        $sp=~ s/impB4/imperialis/;
+        $sp=~ s/ochroleucusB\d/ochroleucus/;
+        $sp=~ s/Praec/praecellens/;
+        $sp=~ s/\.Sogod$//;
+        $sp=~ s/textileNR/textile/;
+        $sp=~ s/\.all//;
+        $sp=~ s/^\d+\.//;
+        if($sp=~ /^C\./){
+                $sp=~ s/C\.//;
+        }
+        $sp=lc $sp;
+
         return $sp;
 }
 
