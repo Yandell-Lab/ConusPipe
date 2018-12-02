@@ -26,7 +26,7 @@ Options:
 
 The basic trainig database for conotoxinseq and noConotoxinseq are provided in ConusPipe/doc as all.cono.training.pep.fa and conus.notTox.training.50to200Len.pep.fa. As you discover/confirm more new conotoxins and non-conotoxins, you can add more sequence to the training database.  
 ### For example to run test data with simple version:
-nohup pathToConusPipe/ConusPipe/bin/discoveryPipe.4methods.simple.v2.pl --peptide pathToConusPipe/ConusPipe/doc/all.cono.training.pep.fa pathToConusPipe/ConusPipe/doc/conus.notTox.training.50to200Len.pep.fa 6 1000 1e-10 0.45 pathToConusPipe/ConusPipe/doc/codeCharMwPi pathToConusPipe/ testSimple & 
+nohup pathToConusPipe/ConusPipe/bin/discoveryPipe.4methods.simple.v2.pl --peptide pathToConusPipe/ConusPipe/doc/ay.pep.fa pathToConusPipe/ConusPipe/doc/all.cono.training.pep.fa pathToConusPipe/ConusPipe/doc/conus.notTox.training.50to200Len.pep.fa 6 1000 1e-10 0.45 pathToConusPipe/ConusPipe/doc/codeCharMwPi pathToConusPipe/ testSimple & 
 ## Expected output:
 For each method, it outputs the overlapped sequence in xx.(4,3,2).overlap.pep.fa.txt, print out non-overlapped sequence in xx.bp.pep.fa.txt, xx.logitSample.pep.fa.txt, xx.labelSpreadSample.pep.fa.txt, xx.neuroNetSample.pep.fa.txt. Finally all the predicted putative toxins are put together in the file xx.total.ml.pep.fa. 
 For the full version pipeline, there's also a tblastn run against ncbi-nr molluscan database (2018/03 version), and if there's a hit, the result is in xx.mtbn.nt.fa and xx.mtbn.pep.fa. 
