@@ -365,6 +365,9 @@ sub getFeatures{
                                 }
 
                         }
+			$countSs=0.0000000001 if $countSs==0;
+			$countPp=0.0000000001 if $countPp==0;
+			$countMTox=0.0000000001 if $countMTox==0;
 			my$cysSsPct=$cysSs/$countSs;
 			my$mwSsAve=$mwSs/($countSs*205);
                         my$piSsAve=$piSs/($countSs*11);
