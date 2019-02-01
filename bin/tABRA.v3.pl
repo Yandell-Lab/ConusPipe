@@ -12,7 +12,7 @@ use Bio::DB::Fasta;
 #-----------------------------------------------------------------------------
 
 my $usage = "tABRA.pl leftReads rightReads blastxDb bxCpus trinityCpus rsemCpus outName\n
-#1  trinity assembly-optimized for long reads conotoxin assembly,label the ids with species, RSEM,E90 script(this annotation pipeline tABRA version2 matches trinity version 2.2.0 output matrix format) to generate statistic file(stderr to a output file), filter trinity assembly by tpm and isoformPercent(IsoPct) in RSEM.isoforms.results,get transcriptome statistics, blastx, annotate&get annotated ones' id;
+#1  trinity assembly-optimized for long reads conotoxin assembly,label the ids with species, RSEM,E90 script(this annotation pipeline tABRA version2 matches trinity version 2.8.4 output matrix format) to generate statistic file(stderr to a output file), filter trinity assembly by tpm and isoformPercent(IsoPct) in RSEM.isoforms.results,get transcriptome statistics, blastx, annotate&get annotated ones' id;
 #2 output intermediate file:label& sort anot.pep&trinity.filtered.fa with tpm.   
 #3 remove anot ones from trinity assembly;
 #4extract conotoxins from annotated ones, trim2longestORF(first Methionine/uppercase to the stop codon/end of seq, uppercase trim is prefered than methionine trim).remove redundant seq for trimmed ones and update tpm value;remove non-redundant seq without a stop codon, but still keep the non-redundant seq with stop codon even if they are without a methionine in the beginning.print out the anot.cono.nt.uniq.fa,anot.cono.pep.uniq.fa, initial statisic report is based on these 2 files. also print out the non-redundant seq with stop codon but without a methionine in the beginning as truncated seq for partial extention: anot.cono.nt.uniq.truncated.fa,anot.cono.pep.uniq.truncated.fa ;
@@ -41,7 +41,7 @@ while(defined (my$line=<FH>)){
 close FH;
 close OUT;
 system("align_and_estimate_abundance.pl --transcripts $sample.trinity.Trinity.rf.fasta --seqType fq --left $left_reads --right $right_reads --SS_lib_type RF --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir $sample.rsem_outdir --thread_count $rsemCpus ");
-system("abundance_estimates_to_matrix.pl --est_method RSEM --out_prefix $sample.matrix.not_cross_norm $sample.rsem_outdir/RSEM.isoforms.results");
+system("abundance_estimates_to_matrix.pl --est_method RSEM --gene_trans_map none --out_prefix $sample.matrix.not_cross_norm $sample.rsem_outdir/RSEM.isoforms.results");
 #note: if seq ids are modified, need to hack the script to get E90
 system("contig_ExN50_statistic.pl $sample.matrix.not_cross_norm.TPM.not_cross_norm $sample.trinity.Trinity.rf.fasta | tee $sample.ExN50.stats");
 #get transcriptome statistics
