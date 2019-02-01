@@ -11,7 +11,7 @@ use Bio::DB::Fasta;
 #----------------------------------- MAIN ------------------------------------
 #-----------------------------------------------------------------------------
 
-my $usage = "tABRA.pl leftReads rightReads blastxDb bxCpus trinityCpus rsemCpus outName\n
+my $usage = "tABRA.pl leftReads rightReads blastxDb pepLength bxCpus trinityCpus rsemCpus outName\n
 #1  trinity assembly-optimized for long reads conotoxin assembly,label the ids with species, RSEM,E90 script(this annotation pipeline tABRA version2 matches trinity version 2.8.4 output matrix format) to generate statistic file(stderr to a output file), filter trinity assembly by tpm and isoformPercent(IsoPct) in RSEM.isoforms.results,get transcriptome statistics, blastx, annotate&get annotated ones' id;
 #2 output intermediate file:label& sort anot.pep&trinity.filtered.fa with tpm.   
 #3 remove anot ones from trinity assembly;
@@ -23,10 +23,11 @@ my $usage = "tABRA.pl leftReads rightReads blastxDb bxCpus trinityCpus rsemCpus 
 my$left_reads=$ARGV[0];
 my$right_reads=$ARGV[1];
 my$bx_db=$ARGV[2];
-my $bxCpus=$ARGV[3];
-my $triCpus=$ARGV[4];
-my $rsemCpus=$ARGV[5];
-my $sample=$ARGV[6];
+my$pep_RL=$ARGV[3];
+my $bxCpus=$ARGV[4];
+my $triCpus=$ARGV[5];
+my $rsemCpus=$ARGV[6];
+my $sample=$ARGV[7];
 my$bflyCpus=$triCpus-5 if$triCpus;
 die $usage unless $sample;
 unless(-f "$sample.trinity.Trinity.fasta" ){
@@ -198,7 +199,7 @@ while (defined (my$line=<FH>)){
 		print OUT6 "$seqstr\n";
 		#run 6frame_translation in unannotated trinity assembly;
 		for my $j (1..3){
-                        translate_print_seq($tid2,$seqstr, $j,\*OUT7);
+                        translate_print_seq($tid2,$seqstr, $j,\*OUT7,$pep_RL);
                         translate_print_seq_whole($tid2,$seqstr, $j,\*OUT12);
                 }
 	}		
@@ -364,6 +365,7 @@ sub translate_print_seq {
         my $seq=shift;
         my $frame=shift;
 	my $fh=shift;
+	my $pep_RL=shift;
         my $pep = translate_with_frame($seq, $frame);
         my $rpep = translate_with_frame($seq, -$frame);
 	print $fh $entry."_frame_$frame\n$pep\n";
