@@ -42,9 +42,9 @@ while(defined (my$line=<FH>)){
 close FH;
 close OUT;
 system("align_and_estimate_abundance.pl --transcripts $sample.trinity.Trinity.rf.fasta --seqType fq --left $left_reads --right $right_reads --SS_lib_type RF --est_method RSEM --aln_method bowtie2 --trinity_mode --prep_reference --output_dir $sample.rsem_outdir --thread_count $rsemCpus ");
-system("abundance_estimates_to_matrix.pl --est_method RSEM --gene_trans_map none --out_prefix $sample.matrix.not_cross_norm $sample.rsem_outdir/RSEM.isoforms.results");
+system("abundance_estimates_to_matrix.pl --est_method RSEM --gene_trans_map $sample.trinity.Trinity.rf.fasta.gene_trans_map --out_prefix $sample.matrix.not_cross_norm $sample.rsem_outdir/RSEM.isoforms.results");
 #note: if seq ids are modified, need to hack the script to get E90
-system("contig_ExN50_statistic.pl $sample.matrix.not_cross_norm.TPM.not_cross_norm $sample.trinity.Trinity.rf.fasta | tee $sample.ExN50.stats");
+system("contig_ExN50_statistic.pl $sample.matrix.not_cross_norm.isoform.TPM.not_cross_norm $sample.trinity.Trinity.rf.fasta | tee $sample.ExN50.stats");
 #get transcriptome statistics
 my($N50,$total,$assembNum)=calculateN50($sample);
 my(%tpm,%isoPcL);
